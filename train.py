@@ -340,7 +340,7 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                 ema.update_attr(model, include=['yaml', 'nc', 'hyp', 'gr', 'names', 'stride', 'class_weights'])
 
             # Update model
-            if epoch > 0 and not opt.nosave:
+            if epoch > 2 and not opt.nosave:
                 model.load_state_dict(torch.load(last, map_location=device)['model'].float().state_dict(),
                                       strict=True)  # load
                 for p in model.parameters():
