@@ -340,10 +340,11 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                 ema.update_attr(model, include=['yaml', 'nc', 'hyp', 'gr', 'names', 'stride', 'class_weights'])
 
             # Update model
-            model.load_state_dict(torch.load(last, map_location=device)['model'].float().state_dict(),
-                                  strict=True)  # load
-            for p in model.parameters():
-                p.requires_grad_(True)
+            if epoch > 0:
+                model.load_state_dict(torch.load(last, map_location=device)['model'].float().state_dict(),
+                                      strict=True)  # load
+                for p in model.parameters():
+                    p.requires_grad_(True)
 
             final_epoch = epoch + 1 == epochs
             if not opt.notest or final_epoch:  # Calculate mAP
