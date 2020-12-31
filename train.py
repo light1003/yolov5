@@ -4,6 +4,7 @@ import math
 import os
 import random
 import time
+from copy import deepcopy
 from pathlib import Path
 from threading import Thread
 from warnings import warn
@@ -337,6 +338,12 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
             # mAP
             if ema:
                 ema.update_attr(model, include=['yaml', 'nc', 'hyp', 'gr', 'names', 'stride', 'class_weights'])
+
+            # Update model
+            model = deepcopy(ema.ema)
+            for p in model.parameters():
+                p.requires_grad_(True)
+
             final_epoch = epoch + 1 == epochs
             if not opt.notest or final_epoch:  # Calculate mAP
                 results, maps, times = test.test(opt.data,
