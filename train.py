@@ -340,7 +340,8 @@ def train(hyp, opt, device, tb_writer=None, wandb=None):
                 ema.update_attr(model, include=['yaml', 'nc', 'hyp', 'gr', 'names', 'stride', 'class_weights'])
 
             # Update model
-            model = deepcopy(ema.ema)
+            model.load_state_dict(torch.load(last, map_location=device)['model'].float().state_dict(),
+                                  strict=True)  # load
             for p in model.parameters():
                 p.requires_grad_(True)
 
